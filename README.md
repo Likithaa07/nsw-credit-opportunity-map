@@ -7,8 +7,7 @@ credits available** on the NSW Biodiversity Offsets Scheme (BOS) register but ar
 then ranks IBRA subregions as **areas for further investigation** for new Biodiversity Stewardship
 Agreements.
 
-It follows on from my [BOS Credit Market Gap Analysis](https://github.com/Likithaa07/nsw-biodiversity-credit-gap)
-(Project 1), which identified the under-supplied credit types.
+It follows on from my [BOS Credit Market Gap Analysis](https://github.com/Likithaa07/nsw-biodiversity-credit-gap), which identified the under-supplied credit types.
 
 **[Briefing note (PDF)](outputs/reports/Briefing_Note.pdf)** ·
 **[Overview map](outputs/maps/01_statewide_overview.png)** ·
@@ -104,7 +103,7 @@ It follows on from my [BOS Credit Market Gap Analysis](https://github.com/Likith
 | BioNet Species Sightings ([OData API](https://data.bionet.nsw.gov.au/biosvcapp/odata/)) | NSW DCCEEW | Threatened species counts per subregion (context only) |
 | [IBRA v7.1 subregions](https://fed.dcceew.gov.au/datasets/erin::interim-biogeographic-regionalisation-for-australia-ibra-version-7-subregions) | Australian Government DCCEEW | Ranking units |
 | [CAPAD 2024 terrestrial](https://data.gov.au/data/dataset/erin-collaborative-australian-protected-areas-database-capad-2024-terrestrial-) | Australian Government DCCEEW | Protected areas (1,018 in NSW) |
-| BOS registers (from Project 1) | NSW DCCEEW | Target credit types and demand (credits retired per year) |
+| BOS registers | NSW DCCEEW | Target credit types and demand (credits retired per year) |
 
 ### How the data was sourced
 
@@ -172,7 +171,7 @@ To change the target credit types, edit `DEMAND` in `src/config.py`.
 
 ## Method
 
-1. **Targets.** I took the top-ranked zero-supply ecosystem credit types from Project 1 and looked up
+1. **Targets.** I took the top-ranked zero-supply ecosystem credit types
    their PCT IDs in BioNet.
    - PCT 1600 had been retired in the 2022 eastern NSW revision, so it was dropped.
 2. **Remaining extent.** The target PCT polygons from the SVTM were intersected with IBRA v7.1
@@ -215,7 +214,7 @@ which ranked IBRA subregions by % cleared, connectivity and threat.
   - Tenure, condition, landholder willingness and existing agreements are unknown.
   - The Biodiversity Conservation Trust (BCT) agreements layer is internal-use only, so existing
     stewardship sites could not be removed.
-- **Demand is a lower bound.** Demand comes from retirements (Project 1), which miss unmet
+- **Demand is a lower bound.** Demand comes from retirements, which miss unmet
   obligations.
 - **Sensitive species.** Only subregion-level counts are used. Locations of sensitive species are
   generalised or withheld by BioNet.
