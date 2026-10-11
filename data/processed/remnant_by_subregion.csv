@@ -1,0 +1,74 @@
+PCTID,REG_NAME_7,SUB_NAME_7,ha,prot_ha,unprot_ha,pct_protected
+24,Channel Country,Bulloo,155745.0,51069.81356491184,104675.0,32.8
+24,Riverina,Lachlan,133889.0,295.37854992000587,133594.0,0.2
+24,Mulga Lands,Paroo Overflow,59015.0,6839.835660215536,52175.0,11.6
+24,Channel Country,Central Depression,44724.0,992.871697591009,43731.0,2.2
+24,Darling Riverine Plains,Menindee,43624.0,870.4582654869882,42754.0,2.0
+24,Mulga Lands,Cuttaburra-Paroo,43619.0,2257.0053100813816,41362.0,5.2
+24,Mulga Lands,Kerribree Basin,38127.0,0.0,38127.0,0.0
+24,Murray Darling Depression,South Olary Plain,35935.0,991.5104756966118,34943.0,2.8
+24,Murray Darling Depression,Darling Depression,34921.0,86.08961561541115,34835.0,0.2
+24,Darling Riverine Plains,Great Darling Anabranch,31926.0,0.0,31926.0,0.0
+24,Broken Hill Complex,Barrier Range Outwash,25297.0,16.009679229586382,25281.0,0.1
+24,Riverina,Murrumbidgee,19560.0,156.40319324215093,19404.0,0.8
+24,Darling Riverine Plains,Wilcannia Plains,15958.0,3565.088887320414,12393.0,22.3
+24,Channel Country,Bulloo Dunefields,15748.0,0.0,15748.0,0.0
+24,Simpson Strzelecki Dunefields,Strzelecki Desert,14622.0,4720.819066090545,9901.0,32.3
+24,Mulga Lands,Warrego Sands,11228.0,1193.2440956771097,10035.0,10.6
+24,Mulga Lands,Paroo-Darling Sands,10697.0,1321.0696008161533,9376.0,12.3
+24,Channel Country,Sturt Stony Desert,9908.0,1219.8329556798249,8688.0,12.3
+24,Mulga Lands,White Cliffs Plateau,7939.0,363.03232864460836,7576.0,4.6
+24,Broken Hill Complex,Barrier Range,5572.0,432.6625540291909,5139.0,7.8
+24,NSW South Western Slopes,Lower Slopes,4996.0,578.440023384758,4418.0,11.6
+24,Mulga Lands,Nebine Plains,4739.0,13.384817262891469,4726.0,0.3
+24,Darling Riverine Plains,Culgoa-Bokhara,4119.0,4.3421890709113455,4115.0,0.1
+24,Mulga Lands,Urisino Sandplains,3473.0,2.949082050227359,3470.0,0.1
+24,Riverina,Murray Fans,2972.0,16.074803514165836,2956.0,0.5
+24,Riverina,Robinvale Plains,2514.0,0.0,2514.0,0.0
+24,Mulga Lands,West Warrego,2392.0,103.04989458983636,2289.0,4.3
+24,NSW South Western Slopes,Inland Slopes,1289.0,0.0,1289.0,0.0
+24,Darling Riverine Plains,Pooncarie-Darling,1173.0,0.0,1173.0,0.0
+24,Cobar Peneplain,Barnato Downs,906.0,11.657499700002873,894.0,1.3
+24,Cobar Peneplain,Lachlan Plains,754.0,0.0,754.0,0.0
+24,Channel Country,Core Ranges,602.0,0.0,602.0,0.0
+24,Cobar Peneplain,Nymagee,477.0,0.0,477.0,0.0
+24,Brigalow Belt South,Narrandool,362.0,0.0,362.0,0.0
+24,Broken Hill Complex,Mootwingee Downs,350.0,0.0,350.0,0.0
+24,Riverina,Murray Scroll Belt,281.0,0.0,281.0,0.0
+24,Broken Hill Complex,Scopes Range,272.0,0.0,272.0,0.0
+24,Mulga Lands,Warrego Plains,220.0,85.89822745701457,134.0,39.0
+24,Darling Riverine Plains,Bogan-Macquarie,165.0,0.0,165.0,0.0
+24,Darling Riverine Plains,Louth Plains,161.0,2.4247171032160098,159.0,1.5
+24,Darling Riverine Plains,Warrambool-Moonie,106.0,0.0,106.0,0.0
+24,Cobar Peneplain,Boorindal Plains,100.0,4.6074998500007895,95.0,4.6
+24,Cobar Peneplain,Canbelego Downs,95.0,1.555,93.0,1.6
+24,Darling Riverine Plains,Castlereagh-Barwon,70.0,0.0,70.0,0.0
+24,Murray Darling Depression,Braemer,12.0,0.0,12.0,0.0
+24,Brigalow Belt South,Moonie-Barwon Interfluve,0.0,0.0,0.0,
+24,Riverina,Victorian Riverina,0.0,0.0,0.0,
+290,NSW South Western Slopes,Inland Slopes,42847.0,9876.517630064529,32970.0,23.1
+290,NSW South Western Slopes,Lower Slopes,5.0,0.0,5.0,0.0
+290,South Eastern Highlands,Bondo,0.0,0.0,0.0,
+309,NSW South Western Slopes,Inland Slopes,7337.0,2859.5762561336373,4477.0,39.0
+309,NSW South Western Slopes,Lower Slopes,87.0,0.0,87.0,0.0
+1604,Brigalow Belt South,Liverpool Range,5.0,0.0,5.0,0.0
+3406,South Eastern Highlands,Hill End,6639.0,16.422979364606785,6623.0,0.2
+3406,South Eastern Highlands,Orange,5741.0,65.30513376187511,5676.0,1.1
+3406,South Eastern Highlands,Murrumbateman,1916.0,0.0,1916.0,0.0
+3406,South Eastern Highlands,Crookwell,301.0,0.6849464529673569,300.0,0.2
+3406,NSW South Western Slopes,Inland Slopes,106.0,0.0,106.0,0.0
+3406,Sydney Basin,Wollemi,91.0,2.8616554432642123,88.0,3.1
+3406,South Eastern Highlands,Capertee Uplands,85.0,0.0,85.0,0.0
+3406,South Eastern Highlands,Bathurst,65.0,0.0,65.0,0.0
+3406,South Eastern Highlands,Bondo,42.0,5.116260477563435,37.0,12.2
+3406,NSW South Western Slopes,Capertee Valley,2.0,0.8833445067349412,1.0,44.2
+4047,NSW North Coast,Macleay Hastings,2365.0,733.3496631216262,1632.0,31.0
+4047,NSW North Coast,Karuah Manning,1924.0,1265.8510772600207,658.0,65.8
+4047,NSW North Coast,Coffs Coast and Escarpment,240.0,34.79122211767046,205.0,14.5
+4047,NSW North Coast,Yuraygir,94.0,79.14831870072511,15.0,84.2
+4047,South Eastern Queensland,Clarence Lowlands,62.0,0.0,62.0,0.0
+4047,Sydney Basin,Illawarra,43.0,8.359706858241811,35.0,19.4
+4047,Sydney Basin,Wyong,9.0,0.0,9.0,0.0
+4047,South Eastern Queensland,Clarence Sandstones,4.0,0.0,4.0,0.0
+4047,Sydney Basin,Yengo,4.0,0.0,4.0,0.0
+4047,Sydney Basin,Pittwater,1.0,0.0,1.0,0.0
