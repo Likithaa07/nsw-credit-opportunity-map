@@ -15,7 +15,23 @@ It follows on from my [BOS Credit Market Gap Analysis](https://github.com/Likith
 **[Metadata (ANZLIC)](outputs/reports/Metadata_ANZLIC.pdf)** ·
 **[Decisions log](outputs/reports/Decisions_Log.pdf)**
 
+| 6 | 105,009 | 860,669 ha | 132 | 1,018 | 5 |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| under-supplied credit types | vegetation polygons analysed | remnant vegetation mapped | IBRA subregions ranked | protected areas overlaid | maps produced |
+
 ---
+
+## Why this matters
+
+- **Credit shortages are widespread.** The NSW Biodiversity Offsets Scheme requires developers to
+  offset the vegetation they clear with credits for the **same vegetation type**. But many types have
+  run out:
+  - the NSW Audit Office (2022) found 91% of ecosystem credit demand could not be matched to supply;
+  - IPART (2026) reports that about 40% of biodiversity types face offsetting difficulties.
+- **New supply needs the right land.** It can only come from landholders who still have that
+  vegetation on their land.
+- **This project shows where that vegetation is**, so outreach for new stewardship sites can start in
+  the right places.
 
 ## Key findings
 
@@ -54,6 +70,30 @@ It follows on from my [BOS Credit Market Gap Analysis](https://github.com/Likith
 | [03 PCT 290](outputs/maps/03_pct_290.png) | Red Stringybark – Red Box – Long-leaved Box |
 | [04 PCT 3406](outputs/maps/04_pct_3406.png) | Southwest Ranges White Box Woodland |
 | [05 PCT 4047](outputs/maps/05_pct_4047.png) | Northern Swamp Mahogany–Bottlebrush Swamp Forest |
+
+## Technical highlights
+
+- **API-driven, reproducible pipeline.** Every input comes straight from official services:
+  - BioNet OData for vegetation IDs and % cleared;
+  - the SVTM ArcGIS service for the polygons;
+  - DCCEEW downloads for IBRA and CAPAD.
+
+  One command (`python run_all.py`) rebuilds everything.
+- **Worked around a 12.5 GB download.** The full vegetation map is behind bot protection, so the
+  pipeline pages through the map service and fetches only the six target vegetation types.
+- **Verified at every step.**
+  - Downloaded hectares match the service's own statistics exactly.
+  - The re-run ranking reproduces the original results exactly.
+- **Faster overlay.** Replacing a dissolve with a spatial-index intersection cut the protected-area
+  step from 30+ minutes to about 5 seconds, without double counting overlapping reserves.
+- **Tested, not assumed.** The ranking was re-run under four weightings, and the top five held.
+- **Data conflicts caught and documented.** The 1750 vegetation map disagreed sharply with BioNet's
+  official % cleared, so the official figures were used and the conflict was recorded
+  (`extent_check.csv`).
+- **Responsible with sensitive data.** Threatened species are reported only as counts per subregion,
+  following the BioNet Sensitive Species Data Policy.
+- **Documented like a government dataset.** It comes with an ANZLIC-profile metadata record, a
+  decisions log and a two-page briefing note.
 
 ## Data
 
@@ -180,17 +220,73 @@ which ranked IBRA subregions by % cleared, connectivity and threat.
 - **Sensitive species.** Only subregion-level counts are used. Locations of sensitive species are
   generalised or withheld by BioNet.
 
-## Repository structure
+## What's in this repository
+
+### Folders at a glance
 
 ```
-src/                config, get_targets, download_layers, overlay, rank_subregions,
-                    species_context, make_maps, run_all
-data/processed/     result tables and NSW subregions
-outputs/maps/       the five maps (PNG, 200 dpi)
-outputs/reports/    briefing note, metadata and decisions log (PDF)
-docs/               briefing note, decisions log, stakeholder feedback (Markdown)
-metadata/           ANZLIC-profile metadata record
+├── Analysis.ipynb      the original Colab notebook, step by step
+├── src/                re-runnable Python scripts (the notebook, cleaned up)
+├── data/processed/     result tables and the NSW subregion boundaries
+├── outputs/maps/       the five maps
+├── outputs/reports/    briefing note, metadata and decisions log as PDFs
+├── docs/               the same documents as editable Markdown, plus stakeholder feedback
+├── metadata/           ANZLIC-profile metadata record (Markdown)
+├── README.md           this page
+└── requirements.txt    Python packages needed
 ```
+
+### Every file explained
+
+**`Analysis.ipynb`** is the working notebook from Google Colab, where the analysis was first built.
+It shows each step as it was run, including the slower first
+attempts at the protected-area overlay that led to decision 5 in the decisions log.
+
+**`src/`** holds the same analysis as clean scripts, so anyone can re-run it from scratch.
+
+| Script | What it does | Reads | Writes |
+|---|---|---|---|
+| `config.py` | Shared settings: target PCTs and their demand, service URLs, projection, colours | | |
+| `get_targets.py` | Looks up each target PCT in the BioNet Vegetation Classification; warns if any are retired | BioNet API | `pct_targets.csv` |
+| `download_layers.py` | Downloads IBRA subregions (clipped to NSW), CAPAD protected areas and the target PCT polygons from the SVTM service | Web services | `ibra_nsw.gpkg`, `data/raw/` |
+| `overlay.py` | Splits vegetation by subregion, measures protected area, and compares mapped extent with BioNet | `data/raw/` | `remnant_by_subregion.csv`, `extent_check.csv`, `pieces.gpkg` |
+| `rank_subregions.py` | Scores and ranks subregions, then runs the sensitivity test | `remnant_by_subregion.csv`, `pct_targets.csv` | `subregion_ranking.csv`, `sensitivity_test.csv` |
+| `species_context.py` | Counts threatened species records in the top five subregions (counts only) | BioNet API | `threatened_species_top5.csv` |
+| `make_maps.py` | Draws the statewide overview and four detail maps | processed files | `outputs/maps/*.png` |
+| `run_all.py` | Runs all six scripts in order | | |
+
+**`data/processed/`** holds the results. All are small and open in Excel.
+
+| File | One row per | Key columns |
+|---|---|---|
+| `pct_targets.csv` | Target PCT | `PCTID`, `status`, `PCTPercentCleared` (BioNet official), `preEuropeanExtent`, `currentExtent` |
+| `ibra_nsw.gpkg` | NSW IBRA subregion (132) | `SUB_NAME_7`, `REG_NAME_7`, boundary geometry (EPSG:3308). Open in QGIS or geopandas |
+| `remnant_by_subregion.csv` | PCT × subregion | `ha` remaining, `prot_ha` protected, `unprot_ha` unprotected, `pct_protected` |
+| `subregion_ranking.csv` | Subregion | `score`, `rank`, `unprot_ha`, `pcts` (which target types occur there). **The main result** |
+| `sensitivity_test.csv` | Weighting tested | Top five subregions under each of four weightings |
+| `threatened_species_top5.csv` | Top-five subregion | `threatened_species`, `threatened_records`, `sensitive_records` (no locations) |
+| `extent_check.csv` | Target PCT | Mapped extent today and in 1750 vs BioNet % cleared (why BioNet figures were used) |
+
+**`outputs/maps/`** holds the five maps (PNG, 200 dpi).
+
+| File | Shows |
+|---|---|
+| `01_statewide_overview.png` | All NSW subregions shaded by opportunity score; top five labelled |
+| `02_pct_309.png` to `05_pct_4047.png` | One map per credit type: remnant (orange), protected areas (grey), and hectares and % protected for the four largest subregions |
+
+**`outputs/reports/`** holds the documents to read, as PDFs.
+
+| File | What it is | Who it's for |
+|---|---|---|
+| `Briefing_Note.pdf` | Two-page government-style brief: recommendations, findings, map, limitations, next steps | A busy manager or decision-maker |
+| `Metadata_ANZLIC.pdf` | Metadata record for the outputs: extent, lineage, accuracy, licence, contacts | Data managers and GIS users who want to reuse the data |
+| `Decisions_Log.pdf` | The eight analysis decisions, why each was made, and its effect | Reviewers checking the method |
+
+**`docs/`** holds the Markdown sources of the briefing note and decisions log (edit these, then
+re-create the PDFs), plus `stakeholder_feedback.md`, which logs reviewer feedback and the changes it
+led to.
+
+**`metadata/metadata.md`** is the editable version of the ANZLIC metadata record.
 
 ## References
 
