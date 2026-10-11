@@ -10,7 +10,7 @@ for folder in (RAW, PROCESSED, MAPS):
 
 CRS = 3308  # NSW Lambert (GDA94), used by the SVTM service and for all area calculations
 
-# STEP 2: Target credit types from Project 1 (zero supply), with credits retired per year
+# STEP 2: Target credit types (zero supply), with credits retired per year
 # PCT 1600 is left out: it was retired in the 2022 eastern NSW revision and is not in the SVTM.
 DEMAND = {309: 507, 290: 289, 24: 155, 4047: 153, 1604: 137, 3406: 127}
 TARGETS = list(DEMAND)
@@ -32,7 +32,7 @@ IBRA_ZIP = "https://fed.dcceew.gov.au/api/download/v1/items/38e668537a2141be85b8
 CAPAD_ZIP = "https://fed.dcceew.gov.au/api/download/v1/items/ec356a872d8048459fe78fc80213dc70/shapefile?layers=0"
 STATES_ZIP = "https://naciscdn.org/naturalearth/10m/cultural/ne_10m_admin_1_states_provinces.zip"
 
-# STEP 4: Colours (colour-blind-safe palette, same as Project 1)
+# STEP 4: Colours (colour-blind-safe palette)
 REMNANT = "#eb6834"
 PROTECTED = "#c9c8c2"
 BASE = "#f5f4f1"
