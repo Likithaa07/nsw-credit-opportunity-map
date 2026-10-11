@@ -22,7 +22,7 @@
 
 - The Biodiversity Offsets Scheme needs credits for the **same vegetation type** that a development
   clears (like-for-like).
-- An earlier analysis of the BOS registers (Project 1, October 2026) found that 43 credit types have
+- An earlier analysis of the BOS registers found that 43 credit types have
   **zero credits available** but are still being retired by developers. This matches the NSW Audit
   Office (2022) and IPART (2026), which report widespread unmet demand.
 - New supply depends on landholders with the **right remnant vegetation** entering stewardship
