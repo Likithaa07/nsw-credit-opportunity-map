@@ -7,8 +7,6 @@ credits available** on the NSW Biodiversity Offsets Scheme (BOS) register but ar
 then ranks IBRA subregions as **areas for further investigation** for new Biodiversity Stewardship
 Agreements.
 
-It follows on from my [BOS Credit Market Gap Analysis](https://github.com/Likithaa07/nsw-biodiversity-credit-gap), which identified the under-supplied credit types.
-
 **[Briefing note (PDF)](outputs/reports/Briefing_Note.pdf)** ·
 **[Overview map](outputs/maps/01_statewide_overview.png)** ·
 **[Metadata (ANZLIC)](outputs/reports/Metadata_ANZLIC.pdf)** ·
@@ -171,9 +169,9 @@ To change the target credit types, edit `DEMAND` in `src/config.py`.
 
 ## Method
 
-1. **Targets.** I took the top-ranked zero-supply ecosystem credit types
-   their PCT IDs in BioNet.
-   - PCT 1600 had been retired in the 2022 eastern NSW revision, so it was dropped.
+1. **Targets.** From the BOS public registers (credit supply and transactions, October 2026), I
+   selected the ecosystem credit types with **zero credits available** that are still being retired,
+   ranked them by credits retired per year, and looked up their PCT IDs in BioNet.
 2. **Remaining extent.** The target PCT polygons from the SVTM were intersected with IBRA v7.1
    subregions in NSW Lambert (EPSG:3308).
 3. **Protection.** Overlap with CAPAD 2024 protected areas was measured using a spatial index.
