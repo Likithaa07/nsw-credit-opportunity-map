@@ -227,7 +227,7 @@ which ranked IBRA subregions by % cleared, connectivity and threat.
 ├── data/processed/     result tables and the NSW subregion boundaries
 ├── outputs/maps/       the five maps
 ├── outputs/reports/    briefing note, metadata and decisions log as PDFs
-├── docs/               the same documents as editable Markdown, plus stakeholder feedback
+├── docs/               the same documents as editable Markdown
 ├── metadata/           ANZLIC-profile metadata record (Markdown)
 ├── README.md           this page
 └── requirements.txt    Python packages needed
@@ -279,9 +279,7 @@ attempts at the protected-area overlay that led to decision 5 in the decisions l
 | `Metadata_ANZLIC.pdf` | Metadata record for the outputs: extent, lineage, accuracy, licence, contacts | Data managers and GIS users who want to reuse the data |
 | `Decisions_Log.pdf` | The eight analysis decisions, why each was made, and its effect | Reviewers checking the method |
 
-**`docs/`** holds the Markdown sources of the briefing note and decisions log (edit these, then
-re-create the PDFs), plus `stakeholder_feedback.md`, which logs reviewer feedback and the changes it
-led to.
+**`docs/`** holds the Markdown sources of the briefing note and decisions log 
 
 **`metadata/metadata.md`** is the editable version of the ANZLIC metadata record.
 
