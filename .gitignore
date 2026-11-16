@@ -1,0 +1,13 @@
+# Large downloads (re-created by src/download_layers.py)
+data/raw/
+data/processed/pieces.gpkg
+*.part
+
+# Python and editor files
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+.vscode/
+.DS_Store
