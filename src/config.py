@@ -1,21 +1,29 @@
-# STEP 1: Shared settings for every script
+"""Shared settings for every script: folders, target credit types, data services, colours."""
+# STEP 1: Folders
+from __future__ import annotations
+
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw"
 PROCESSED = ROOT / "data" / "processed"
 MAPS = ROOT / "outputs" / "maps"
-for folder in (RAW, PROCESSED, MAPS):
-    folder.mkdir(parents=True, exist_ok=True)
+
+
+def make_folders() -> None:
+    """Create the data and output folders if they don't exist yet."""
+    for folder in (RAW, PROCESSED, MAPS):
+        folder.mkdir(parents=True, exist_ok=True)
+
 
 CRS = 3308  # NSW Lambert (GDA94), used by the SVTM service and for all area calculations
 
 # STEP 2: Target credit types (zero supply), with credits retired per year
 # PCT 1600 is left out: it was retired in the 2022 eastern NSW revision and is not in the SVTM.
-DEMAND = {309: 507, 290: 289, 24: 155, 4047: 153, 1604: 137, 3406: 127}
-TARGETS = list(DEMAND)
+DEMAND: dict[int, int] = {309: 507, 290: 289, 24: 155, 4047: 153, 1604: 137, 3406: 127}
+TARGETS: list[int] = list(DEMAND)
 
-SHORT_NAMES = {
+SHORT_NAMES: dict[int, str] = {
     309: "Black Cypress Pine – Red Stringybark low open forest",
     290: "Red Stringybark – Red Box – Long-leaved Box low open forest",
     24: "Canegrass swamp tall grassland wetland",

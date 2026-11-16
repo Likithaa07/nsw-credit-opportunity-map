@@ -1,5 +1,7 @@
 # NSW Biodiversity Credit Opportunity Map
 
+[![tests](https://github.com/Likithaa07/nsw-credit-opportunity-map/actions/workflows/tests.yml/badge.svg)](https://github.com/Likithaa07/nsw-credit-opportunity-map/actions/workflows/tests.yml)
+
 **Where does native vegetation remain for the NSW biodiversity credit types that have run out?**
 
 This project maps the remaining native vegetation for six ecosystem credit types that have **zero
@@ -80,7 +82,7 @@ Agreements.
   - the SVTM ArcGIS service for the polygons;
   - DCCEEW downloads for IBRA and CAPAD.
 
-  One command (`python run_all.py`) rebuilds everything.
+  One command (`python src/run_all.py`) rebuilds everything.
 - **Worked around a 12.5 GB download.** The full vegetation map is behind bot protection, so the
   pipeline pages through the map service and fetches only the six target vegetation types.
 - **Verified at every step.**
@@ -144,7 +146,7 @@ subregion, in line with the
 
 ## Installation
 
-Requirements: Python 3.10 or later.
+Requirements: Python 3.12 or later. Package versions are pinned in `requirements.txt`.
 
 ```bash
 git clone https://github.com/Likithaa07/nsw-credit-opportunity-map.git
@@ -156,12 +158,24 @@ It also runs in Google Colab, where geopandas is pre-installed.
 
 ## How to run it
 
+From the repository folder:
+
 ```bash
-cd src
-python run_all.py
+python src/run_all.py
 ```
 
-Or run the steps one at a time:
+It runs the steps below in order and stops with a clear message if an input is missing,
+a data service fails, or the data fails a check. Web requests are retried up to five times
+(waiting 2, 4, 8, 16 and 32 seconds), error pages are never treated as data, and a failed
+download never leaves a half-written file behind.
+
+To run only some steps, for example to redo the ranking and maps after changing the score:
+
+```bash
+python src/run_all.py --only rank maps
+```
+
+Or run a step on its own (`python src/rank_subregions.py`):
 
 | Order | Script | What it does | Time |
 |---:|---|---|---|
@@ -173,7 +187,35 @@ Or run the steps one at a time:
 | 6 | `make_maps.py` | Draws the five maps | about 1 min |
 | 7 | `stewardship_check.py` | Compares the ranking with existing stewardship sites (needs the register CSV in `data/raw/`, see below) | seconds |
 
+Step 7 is skipped with a warning if the register CSV has not been downloaded.
+
 To change the target credit types, edit `DEMAND` in `src/config.py`.
+
+**Or with Docker** (no Python setup needed):
+
+```bash
+docker build -t credit-map .
+docker run --rm -v "$PWD/data:/app/data" -v "$PWD/outputs:/app/outputs" credit-map
+```
+
+### Tests
+
+```bash
+python -m pytest -v
+```
+
+The 20 tests check:
+
+- the area maths on squares with known areas, including that overlapping reserves are never
+  counted twice
+- the retries and error handling, using a small local web server that fails on purpose
+- that the ranking and sensitivity test rebuilt from the committed tables match the published
+  results exactly, along with the headline figures (860,669 ha; Hill End and Orange holding 83%
+  of PCT 3406)
+- the stewardship check, on a small made-up register
+
+GitHub Actions runs the tests on every push, then rebuilds the ranking and confirms nothing
+changed (`.github/workflows/tests.yml`).
 
 ## Method
 
@@ -260,20 +302,23 @@ above and save it as `data/raw/bct_public_register.csv`.
 ### Folders at a glance
 
 ```
-├── Analysis.ipynb      the original Colab notebook, step by step
+├── analysis.ipynb      the original Colab notebook, step by step
 ├── src/                re-runnable Python scripts (the notebook, cleaned up)
+├── tests/              pytest tests
+├── .github/workflows/  runs the tests on every push
 ├── data/processed/     result tables and the NSW subregion boundaries
 ├── outputs/maps/       the five maps
 ├── outputs/reports/    briefing note, metadata and decisions log as PDFs
 ├── docs/               the same documents as editable Markdown
 ├── metadata/           ANZLIC-profile metadata record (Markdown)
 ├── README.md           this page
-└── requirements.txt    Python packages needed
+├── requirements.txt    Python packages needed (exact versions)
+└── Dockerfile          runs the pipeline in a container
 ```
 
 ### Every file explained
 
-**`Analysis.ipynb`** is the working notebook from Google Colab, where the analysis was first built.
+**`analysis.ipynb`** is the working notebook from Google Colab, where the analysis was first built.
 It shows each step as it was run, including the slower first
 attempts at the protected-area overlay that led to decision 5 in the decisions log.
 
@@ -281,6 +326,7 @@ attempts at the protected-area overlay that led to decision 5 in the decisions l
 
 | Script | What it does | Reads | Writes |
 |---|---|---|---|
+| `utils.py` | Shared helpers: logging, clear error messages, input checks, and web requests that retry | | |
 | `config.py` | Shared settings: target PCTs and their demand, service URLs, projection, colours | | |
 | `get_targets.py` | Looks up each target PCT in the BioNet Vegetation Classification; warns if any are retired | BioNet API | `pct_targets.csv` |
 | `download_layers.py` | Downloads IBRA subregions (clipped to NSW), CAPAD protected areas and the target PCT polygons from the SVTM service | Web services | `ibra_nsw.gpkg`, `data/raw/` |
@@ -288,7 +334,7 @@ attempts at the protected-area overlay that led to decision 5 in the decisions l
 | `rank_subregions.py` | Scores and ranks subregions, then runs the sensitivity test | `remnant_by_subregion.csv`, `pct_targets.csv` | `subregion_ranking.csv`, `sensitivity_test.csv` |
 | `species_context.py` | Counts threatened species records in the top five subregions (counts only) | BioNet API | `threatened_species_top5.csv` |
 | `make_maps.py` | Draws the statewide overview and four detail maps | processed files | `outputs/maps/*.png` |
-| `run_all.py` | Runs all six scripts in order | | |
+| `run_all.py` | Runs all seven scripts in order (or just some, with `--only`) | | |
 | `stewardship_check.py` | Compares the ranking with existing Biodiversity Stewardship Agreement sites, by bioregion | `subregion_ranking.csv`, `remnant_by_subregion.csv`, BCT register CSV | `stewardship_by_bioregion.csv`, `06_stewardship_check.png` |
 
 **`data/processed/`** holds the results. All are small and open in Excel.

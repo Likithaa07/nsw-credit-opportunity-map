@@ -1,8 +1,11 @@
-pandas>=2.0
-geopandas>=1.0
-pyogrio>=0.7
-shapely>=2.0
-numpy>=1.24
-requests>=2.31
-matplotlib>=3.7
-scipy>=1.11
+# Exact versions, so every run gives the same results (tested with Python 3.12 and 3.13)
+pandas==2.2.3
+numpy==2.1.3
+geopandas==1.0.1
+pyogrio==0.10.0
+shapely==2.0.6
+requests==2.32.3
+urllib3==2.2.3
+matplotlib==3.9.2
+scipy==1.14.1
+pytest==8.3.3

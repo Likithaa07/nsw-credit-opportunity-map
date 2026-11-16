@@ -1,19 +1,27 @@
 """Map series: a statewide overview plus a detail map for each of the top four target PCTs."""
 # STEP 1: Imports
+from __future__ import annotations
+
 import geopandas as gpd
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import pandas as pd
 
 from config import (BASE, CRS, DEMAND, EDGE, MAPS, MUTED, PROCESSED, PROTECTED, RAMP, RAW,
-                    REMNANT, SHORT_NAMES)
+                    REMNANT, SHORT_NAMES, make_folders)
+from utils import get_logger, require_files
+
+log = get_logger("make_maps")
 
 DETAIL_PCTS = [309, 290, 3406, 4047]
 SOURCE = "Data: NSW SVTM C2.0M2.2, BioNet, IBRA v7.1, CAPAD 2024, BOS registers (Oct 2026)."
 
 
 # STEP 2: Load layers and tables
-def load():
+def load() -> tuple:
+    require_files(PROCESSED / "ibra_nsw.gpkg", PROCESSED / "pieces.gpkg", RAW / "capad.zip",
+                  PROCESSED / "subregion_ranking.csv", PROCESSED / "remnant_by_subregion.csv",
+                  PROCESSED / "pct_targets.csv", hint="Run the earlier scripts first.")
     ibra = gpd.read_file(PROCESSED / "ibra_nsw.gpkg")
     pieces = gpd.read_file(PROCESSED / "pieces.gpkg")
     capad = gpd.read_file(RAW / "capad.zip")
@@ -25,7 +33,7 @@ def load():
 
 
 # STEP 3: Scale bar helper
-def scale_bar(ax, box, side):
+def scale_bar(ax: plt.Axes, box: tuple[float, float, float, float], side: float) -> None:
     km = 10 if side < 150_000 else 50 if side < 600_000 else 100
     x, y = box[0] + side * 0.05, box[1] + side * 0.05
     ax.plot([x, x + km * 1000], [y, y], color="#0b0b0b", lw=3)
@@ -33,7 +41,7 @@ def scale_bar(ax, box, side):
 
 
 # STEP 4: Map 1 - statewide overview, subregions shaded by opportunity score
-def overview(ibra, rank):
+def overview(ibra: gpd.GeoDataFrame, rank: pd.DataFrame) -> None:
     m = ibra.merge(rank[["SUB_NAME_7", "score", "rank"]], on="SUB_NAME_7", how="left")
     labels = ["Low (under 10)", "Moderate (10–30)", "High (30–100)", "Very high (100+)"]
     m["cls"] = pd.cut(m["score"], bins=[0, 10, 30, 100, 1e9], labels=labels)
@@ -64,7 +72,8 @@ def overview(ibra, rank):
 
 
 # STEP 5: Maps 2-5 - one detail map per PCT, labels on the four largest subregions
-def detail(p, n, ibra, pieces, capad, by_sub, cleared):
+def detail(p: int, n: int, ibra: gpd.GeoDataFrame, pieces: gpd.GeoDataFrame,
+           capad: gpd.GeoDataFrame, by_sub: pd.DataFrame, cleared: dict[int, float]) -> None:
     v = pieces[pieces["PCTID"] == p]
     xmin, ymin, xmax, ymax = v.total_bounds
     side = max(xmax - xmin, ymax - ymin) * 1.25
@@ -103,9 +112,14 @@ def detail(p, n, ibra, pieces, capad, by_sub, cleared):
 
 
 # STEP 6: Run everything
-if __name__ == "__main__":
+def main() -> None:
+    make_folders()
     ibra, pieces, capad, rank, by_sub, cleared = load()
     overview(ibra, rank)
     for n, p in enumerate(DETAIL_PCTS, start=2):
         detail(p, n, ibra, pieces, capad, by_sub, cleared)
-    print("Maps saved to", MAPS)
+    log.info("Maps saved to %s", MAPS)
+
+
+if __name__ == "__main__":
+    main()
