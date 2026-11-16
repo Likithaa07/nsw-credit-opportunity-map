@@ -48,6 +48,11 @@ Agreements.
   survive almost only in Inland Slopes.
 - **The ranking is robust.** The top five are unchanged under four different weightings.
 - **Biodiversity value is high.** Each top subregion has 66–211 threatened species recorded in BioNet.
+- **The top area is under-served by existing stewardship sites.** The NSW South Western Slopes
+  holds 63% of the opportunity score but only 8% of the area under the 380 Biodiversity
+  Stewardship Agreements in force. Existing sites are mostly elsewhere: there is no meaningful
+  link between the score and stewardship area by bioregion (Spearman ρ = 0.15, p = 0.55).
+  [Details](#reality-check-existing-stewardship-sites)
 
 | PCT | Credit type | Remaining | Protected | % cleared | Retired/yr |
 |---|---|---:|---:|---:|---:|
@@ -102,6 +107,7 @@ Agreements.
 | [IBRA v7.1 subregions](https://fed.dcceew.gov.au/datasets/erin::interim-biogeographic-regionalisation-for-australia-ibra-version-7-subregions) | Australian Government DCCEEW | Ranking units |
 | [CAPAD 2024 terrestrial](https://data.gov.au/data/dataset/erin-collaborative-australian-protected-areas-database-capad-2024-terrestrial-) | Australian Government DCCEEW | Protected areas (1,018 in NSW) |
 | BOS registers | NSW DCCEEW | Target credit types and demand (credits retired per year) |
+| [Public register of conservation agreements](https://www.nsw.gov.au/environment-land-and-water/conservation-on-private-land/public-register) (Q1 FY27) | Biodiversity Conservation Trust | Bioregion and area of each Biodiversity Stewardship Agreement (reality check) |
 
 ### How the data was sourced
 
@@ -123,6 +129,7 @@ Agreements.
 | `data/processed/sensitivity_test.csv` | Top five under four weightings |
 | `data/processed/threatened_species_top5.csv` | Threatened species counts for the top five subregions (no locations) |
 | `data/processed/extent_check.csv` | Mapped extent vs BioNet figures (why BioNet % cleared is used) |
+| `data/processed/stewardship_by_bioregion.csv` | Opportunity score vs existing stewardship sites, by bioregion |
 
 The large spatial files (`svtm_targets.gpkg`, `pieces.gpkg`, `capad.zip`) are **not committed**
 because they are over GitHub's size limit. Running the pipeline re-creates them.
@@ -164,6 +171,7 @@ Or run the steps one at a time:
 | 4 | `rank_subregions.py` | Scores, ranks and runs the sensitivity test | seconds |
 | 5 | `species_context.py` | Counts threatened species in the top five subregions | a few minutes |
 | 6 | `make_maps.py` | Draws the five maps | about 1 min |
+| 7 | `stewardship_check.py` | Compares the ranking with existing stewardship sites (needs the register CSV in `data/raw/`, see below) | seconds |
 
 To change the target credit types, edit `DEMAND` in `src/config.py`.
 
@@ -194,6 +202,35 @@ also close to the approach of the
 [Biodiversity Conservation Investment Strategy 2018](https://www.environment.nsw.gov.au/publications/biodiversity-conservation-investment-strategy-2018),
 which ranked IBRA subregions by % cleared, connectivity and threat.
 
+## Reality check: existing stewardship sites
+
+Is the market already supplying credits where the ranking points? The Biodiversity Conservation
+Trust's public register lists every Biodiversity Stewardship Agreement (BSA) with its IBRA
+bioregion and area. Agreement boundaries are internal-use only, so the check is made by bioregion.
+`stewardship_check.py` compares each bioregion's share of the opportunity score with its share of
+BSA area (380 agreements in force, 129,662 ha).
+
+| Bioregion | Share of opportunity score | Share of BSA area | BSAs in force |
+|---|---:|---:|---:|
+| NSW South Western Slopes | **63%** | **8%** | 23 |
+| South Eastern Highlands | 14% | 8% | 38 |
+| NSW North Coast | 12% | 12% | 55 |
+| Sydney Basin | 0.2% | 14% | 168 |
+| Brigalow Belt South | 0.0% | 17% | 36 |
+
+- The bioregion with almost two-thirds of the opportunity has less than a tenth of the existing
+  stewardship area, so the top-ranked areas are **untapped**, not already supplied.
+- Existing sites are concentrated in the Sydney Basin, Brigalow Belt South and Riverina, where
+  the six target credit types barely occur.
+- There is no meaningful rank correlation between score and BSA area (Spearman ρ = 0.15,
+  p = 0.55, 18 bioregions).
+
+![Stewardship check](outputs/maps/06_stewardship_check.png)
+
+Caveats: bioregions are much coarser than the subregions used in the ranking, and BSA area covers
+all credit types, not only the six targets. To re-run it, download the register CSV from the link
+above and save it as `data/raw/bct_public_register.csv`.
+
 ## Limitations
 
 - **Vegetation map accuracy.**
@@ -211,7 +248,8 @@ which ranked IBRA subregions by % cleared, connectivity and threat.
 - **Remnant is not supply.**
   - Tenure, condition, landholder willingness and existing agreements are unknown.
   - The Biodiversity Conservation Trust (BCT) agreements layer is internal-use only, so existing
-    stewardship sites could not be removed.
+    stewardship sites could not be removed from the remnant. They are compared by bioregion
+    instead (see the reality check above).
 - **Demand is a lower bound.** Demand comes from retirements, which miss unmet
   obligations.
 - **Sensitive species.** Only subregion-level counts are used. Locations of sensitive species are
@@ -251,6 +289,7 @@ attempts at the protected-area overlay that led to decision 5 in the decisions l
 | `species_context.py` | Counts threatened species records in the top five subregions (counts only) | BioNet API | `threatened_species_top5.csv` |
 | `make_maps.py` | Draws the statewide overview and four detail maps | processed files | `outputs/maps/*.png` |
 | `run_all.py` | Runs all six scripts in order | | |
+| `stewardship_check.py` | Compares the ranking with existing Biodiversity Stewardship Agreement sites, by bioregion | `subregion_ranking.csv`, `remnant_by_subregion.csv`, BCT register CSV | `stewardship_by_bioregion.csv`, `06_stewardship_check.png` |
 
 **`data/processed/`** holds the results. All are small and open in Excel.
 
@@ -263,13 +302,15 @@ attempts at the protected-area overlay that led to decision 5 in the decisions l
 | `sensitivity_test.csv` | Weighting tested | Top five subregions under each of four weightings |
 | `threatened_species_top5.csv` | Top-five subregion | `threatened_species`, `threatened_records`, `sensitive_records` (no locations) |
 | `extent_check.csv` | Target PCT | Mapped extent today and in 1750 vs BioNet % cleared (why BioNet figures were used) |
+| `stewardship_by_bioregion.csv` | IBRA bioregion | `score_share_pct`, `bsa_area_share_pct`, `bsa_agreements`, `bsa_ha` |
 
-**`outputs/maps/`** holds the five maps (PNG, 200 dpi).
+**`outputs/maps/`** holds the five maps and the stewardship check chart (PNG, 200 dpi).
 
 | File | Shows |
 |---|---|
 | `01_statewide_overview.png` | All NSW subregions shaded by opportunity score; top five labelled |
 | `02_pct_309.png` to `05_pct_4047.png` | One map per credit type: remnant (orange), protected areas (grey), and hectares and % protected for the four largest subregions |
+| `06_stewardship_check.png` | Share of opportunity score vs share of existing stewardship site area, by bioregion |
 
 **`outputs/reports/`** holds the documents to read, as PDFs.
 
